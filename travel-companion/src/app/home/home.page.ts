@@ -1,6 +1,6 @@
 // home.page.ts
 import { Component, OnDestroy } from '@angular/core';
-import { IonHeader, IonToolbar, IonTitle, IonContent, IonButton, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonChip, IonLabel } from '@ionic/angular/standalone';
+import { IonHeader, IonToolbar, IonTitle, IonContent, IonButton, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonChip, IonLabel, IonList, IonItem } from '@ionic/angular/standalone';
 import { CameraService } from '../services/camera.service';
 import { LocationService, LocationData, DistanceResult } from '../services/location.service';
 import { DeviceInfoService } from '../services/device-info.service';
@@ -44,7 +44,9 @@ interface DeviceInfo {
     IonCardTitle,
     IonCardContent,
     IonChip,
-    IonLabel
+    IonLabel,
+    IonList,
+    IonItem
   ],
 })
 export class HomePage implements OnDestroy {

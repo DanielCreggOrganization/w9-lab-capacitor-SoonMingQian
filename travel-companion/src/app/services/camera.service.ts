@@ -19,8 +19,12 @@ export class CameraService {
       // Set image quality (0-100)
       quality: 90
     })
+
+    
     return image.base64String
       ? `data:image/jpeg;base64,${image.base64String}`
       : undefined;
   }
+
+  
 }

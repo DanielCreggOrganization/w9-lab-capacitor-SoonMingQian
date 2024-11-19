@@ -1,12 +1,31 @@
 // home.page.ts
 import { Component, OnDestroy } from '@angular/core';
-import { IonHeader, IonToolbar, IonTitle, IonContent, IonButton, IonCard, IonCardHeader, IonCardTitle, IonCardContent } from '@ionic/angular/standalone';
+import { IonHeader, IonToolbar, IonTitle, IonContent, IonButton, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonChip, IonLabel } from '@ionic/angular/standalone';
 import { CameraService } from '../services/camera.service';
 import { LocationService, LocationData, DistanceResult } from '../services/location.service';
 import { DeviceInfoService } from '../services/device-info.service';
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
 
+interface DeviceInfo {
+  model: string;
+  platform: string;
+  osVersion: string;
+  browser: {
+    name: string;
+    version: string;
+    features: {
+      webgl: boolean;
+      webrtc: boolean;
+      geolocation: boolean;
+      touchscreen: boolean;
+      notifications: boolean;
+      bluetooth: boolean;
+      camera: boolean;
+    };
+    apis: string[];
+  };
+}
 
 @Component({
   selector: 'app-home',
@@ -24,12 +43,14 @@ import { Subscription } from 'rxjs';
     IonCardHeader,
     IonCardTitle,
     IonCardContent,
+    IonChip,
+    IonLabel
   ],
 })
 export class HomePage implements OnDestroy {
   capturedImage?: string;
   location?: LocationData;
-  deviceInfo?: any;
+  deviceInfo?: DeviceInfo;
   
   // New properties
   locationHistory: LocationData[] = [];

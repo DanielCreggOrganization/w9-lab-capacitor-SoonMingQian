@@ -47,10 +47,52 @@
 
   @if (deviceInfo) {
     <ion-card>
+      <ion-card-header>
+        <ion-card-title>Device Information</ion-card-title>
+      </ion-card-header>
       <ion-card-content>
-        <p>Model: {{deviceInfo.model}}</p>
-        <p>Platform: {{deviceInfo.platform}}</p>
-        <p>OS Version: {{deviceInfo.osVersion}}</p>
+        <ion-list>
+          <ion-item>
+            <ion-label>
+              <h2>Hardware</h2>
+              <p>Model: {{deviceInfo.model}}</p>
+              <p>Platform: {{deviceInfo.platform}}</p>
+              <p>OS Version: {{deviceInfo.osVersion}}</p>
+            </ion-label>
+          </ion-item>
+
+          <ion-item>
+            <ion-label>
+              <h2>Browser</h2>
+              <p>Name: {{deviceInfo.browser.name}}</p>
+              <p>Version: {{deviceInfo.browser.version}}</p>
+            </ion-label>
+          </ion-item>
+
+          <ion-item>
+            <ion-label>
+              <h2>Features</h2>
+              <p>WebGL: {{deviceInfo.browser.features.webgl ? '✓' : '✗'}}</p>
+              <p>WebRTC: {{deviceInfo.browser.features.webrtc ? '✓' : '✗'}}</p>
+              <p>Geolocation: {{deviceInfo.browser.features.geolocation ? '✓' : '✗'}}</p>
+              <p>Touchscreen: {{deviceInfo.browser.features.touchscreen ? '✓' : '✗'}}</p>
+              <p>Notifications: {{deviceInfo.browser.features.notifications ? '✓' : '✗'}}</p>
+              <p>Bluetooth: {{deviceInfo.browser.features.bluetooth ? '✓' : '✗'}}</p>
+              <p>Camera: {{deviceInfo.browser.features.camera ? '✓' : '✗'}}</p>
+            </ion-label>
+          </ion-item>
+
+          @if (deviceInfo.browser.apis.length > 0) {
+            <ion-item>
+              <ion-label>
+                <h2>Available Web APIs</h2>
+                <ion-chip *ngFor="let api of deviceInfo.browser.apis">
+                  {{api}}
+                </ion-chip>
+              </ion-label>
+            </ion-item>
+          }
+        </ion-list>
       </ion-card-content>
     </ion-card>
   }

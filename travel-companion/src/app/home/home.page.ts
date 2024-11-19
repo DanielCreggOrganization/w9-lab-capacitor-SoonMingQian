@@ -1,10 +1,12 @@
 // home.page.ts
-import { Component } from '@angular/core';
-import { IonHeader, IonToolbar, IonTitle, IonContent, IonButton } from '@ionic/angular/standalone';
+import { Component, OnDestroy } from '@angular/core';
+import { IonHeader, IonToolbar, IonTitle, IonContent, IonButton, IonCard, IonCardHeader, IonCardTitle, IonCardContent } from '@ionic/angular/standalone';
 import { CameraService } from '../services/camera.service';
-import { LocationService } from '../services/location.service';
+import { LocationService, LocationData, DistanceResult } from '../services/location.service';
 import { DeviceInfoService } from '../services/device-info.service';
 import { CommonModule } from '@angular/common';
+import { Subscription } from 'rxjs';
+
 
 @Component({
   selector: 'app-home',
@@ -17,13 +19,23 @@ import { CommonModule } from '@angular/common';
     IonToolbar, 
     IonTitle, 
     IonContent,
-    IonButton
+    IonButton,
+    IonCard,
+    IonCardHeader,
+    IonCardTitle,
+    IonCardContent,
   ],
 })
-export class HomePage {
+export class HomePage implements OnDestroy {
   capturedImage?: string;
-  location?: any;
+  location?: LocationData;
   deviceInfo?: any;
+  
+  // New properties
+  locationHistory: LocationData[] = [];
+  currentLocationSub?: Subscription;
+  distanceFromStart?: DistanceResult;
+  accuracyCircle?: Array<[number, number]>;
 
   constructor(
     private cameraService: CameraService,
@@ -43,6 +55,7 @@ export class HomePage {
   async getLocation() {
     try {
       this.location = await this.locationService.getCurrentPosition();
+      this.accuracyCircle = this.locationService.getAccuracyCircle(this.location);
       console.log('Location:', this.location);
     } catch (error) {
       console.error('Location error:', error);
@@ -56,5 +69,39 @@ export class HomePage {
     } catch (error) {
       console.error('Device info error:', error);
     }
+  }
+
+  async startTrackingLocation() {
+    try {
+      const locationObservable = await this.locationService.startWatchingPosition({
+        enableHighAccuracy: true,
+        timeout: 5000
+      });
+
+      this.currentLocationSub = locationObservable.subscribe(location => {
+        this.location = location;
+        this.locationHistory.push(location);
+        this.accuracyCircle = this.locationService.getAccuracyCircle(location);
+        
+        // Calculate distance if we have a starting point
+        if (this.locationHistory.length > 1) {
+          this.distanceFromStart = this.locationService.calculateDistance(
+            this.locationHistory[0],
+            location
+          );
+        }
+      });
+    } catch (error) {
+      console.error('Error starting location tracking:', error);
+    }
+  }
+
+  stopTrackingLocation() {
+    this.locationService.stopWatchingPosition();
+    this.currentLocationSub?.unsubscribe();
+  }
+
+  ngOnDestroy() {
+    this.stopTrackingLocation();
   }
 }

@@ -8,21 +8,50 @@
 <ion-content>
   <ion-button (click)="takePicture()">Take Picture</ion-button>
   <ion-button (click)="getLocation()">Get Location</ion-button>
+  <ion-button (click)="startTrackingLocation()">Start Tracking</ion-button>
+  <ion-button (click)="stopTrackingLocation()">Stop Tracking</ion-button>
   <ion-button (click)="getDeviceInfo()">Get Device Info</ion-button>
 
-  @if (capturedImage){
-  <img [src]="capturedImage" alt="Captured image">
+  @if (capturedImage) {
+    <img [src]="capturedImage" alt="Captured image">
   }
 
-  @if (location){
-  <p>Latitude: {{location.coords.latitude}}</p>
-  <p>Longitude: {{location.coords.longitude}}</p>
+  @if (location) {
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Location Info</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <p>Latitude: {{location.latitude}}</p>
+        <p>Longitude: {{location.longitude}}</p>
+        <p>Accuracy: {{location.accuracy}} meters</p>
+        <p>Timestamp: {{location.timestamp | date:'medium'}}</p>
+        
+        @if (distanceFromStart) {
+          <p>Distance traveled: {{distanceFromStart.kilometers}} km</p>
+        }
+      </ion-card-content>
+    </ion-card>
   }
 
+  @if (locationHistory.length > 0) {
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Location History</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <p>Points recorded: {{locationHistory.length}}</p>
+      </ion-card-content>
+    </ion-card>
+  }
 
-  @if (deviceInfo){
-    <p>Model: {{deviceInfo.model}}</p>
-    <p>Platform: {{deviceInfo.platform}}</p>
-    <p>OS Version: {{deviceInfo.osVersion}}</p>
+  @if (deviceInfo) {
+    <ion-card>
+      <ion-card-content>
+        <p>Model: {{deviceInfo.model}}</p>
+        <p>Platform: {{deviceInfo.platform}}</p>
+        <p>OS Version: {{deviceInfo.osVersion}}</p>
+      </ion-card-content>
+    </ion-card>
   }
 </ion-content>
